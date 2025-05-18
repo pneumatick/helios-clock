@@ -39,23 +39,26 @@ sunset_delta = timedelta(hours=formatted_sunset.hour,
 # Get day of week as int (Monday = 0, Sunday = 6)
 weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
 greekdays = ["Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Sun"]
+day_symbols = ["☾", "♂", "☿", "♃",  "♀", "♄", "☉"]
 dt_now = datetime.now()
 day_of_week = dt_now.isoweekday() - 1
 day_of_week_str = dt_now.strftime("%A")
 
 # Set up planet-hour table (starting from Monday)
 planet_hours = ["Moon", "Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury"] 
+planet_symbols = ["☾", "♄", "♃", "♂", "☉", "♀", "☿"]
 
 # Print informaton
-print(f"Today is {weekdays[day_of_week]}: Day of {greekdays[day_of_week]}")
+print(f"Today is {weekdays[day_of_week]}: Day of {greekdays[day_of_week]} {day_symbols[day_of_week]}\n")
 print(f"Length of today's hours: {hour_length} minutes")
 print(f"Sunrise: {formatted_sunrise.time()} AM")
 print(f"Sunset: {formatted_sunset.time()} PM")
 print("\nHour table\n")
 for i in range(12):
-    print("Hour {}: {} - {}, Hour of {}".format(
+    print("Hour {}: {} - {}, Hour of {} {}".format(
         i + 1,
         sunrise_delta + hour_delta * i,
         sunrise_delta + hour_delta * (i + 1),
-        planet_hours[(day_of_week * 24 + i) % len(planet_hours)]))
+        planet_hours[(day_of_week * 24 + i) % len(planet_hours)],
+        planet_symbols[(day_of_week * 24 + i) % len(planet_symbols)]))
 
