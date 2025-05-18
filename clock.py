@@ -1,12 +1,17 @@
 from datetime import datetime, timedelta
 import requests
 
-# Global coordinates
-lat = 41.7042
-long = -71.4558
+# Geolocation and time data (sample data for now)
+lat = 41.695228
+long = -71.453311
+date = "today"
+tz = "America/New_York"
+
+# Set up URL
+url = f"https://api.sunrise-sunset.org/json?lat={lat}8&lng={long}&date={date}&tzid={tz}"
 
 # Get data from API
-response = requests.get('https://api.sunrise-sunset.org/json?lat=41.695228&lng=-71.453311&date=today&tzid=America/New_York').json()
+response = requests.get(url).json()
 
 # Get the length of the 12 hours of the day
 length_format = "%H:%M:%S"
