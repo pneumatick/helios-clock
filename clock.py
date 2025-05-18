@@ -60,12 +60,12 @@ print(f"Today is {weekdays[day_of_week]}: Day of {greekdays[day_of_week]} {day_s
 print(f"Length of today's hours: {floor(hour_length)} minutes, {seconds_in_hour} seconds")
 print(f"Sunrise: {formatted_sunrise.time()} AM")
 print(f"Sunset: {formatted_sunset.time()} PM")
-print("\nHour table\n")
+print()
 for i in range(12):
-    print("Hour {}: {} - {}, Hour of {} {}".format(
+    print("Hour {0:<5} {1:<1} {2:<8} : {3} - {4}".format(
           i + 1,
-          delta_to_ampm(sunrise_delta + hour_delta * i),
-          delta_to_ampm(sunrise_delta + hour_delta * (i + 1)),
+          planet_symbols[(day_of_week * 24 + i) % len(planet_symbols)],
           planet_hours[(day_of_week * 24 + i) % len(planet_hours)],
-          planet_symbols[(day_of_week * 24 + i) % len(planet_symbols)]))
+          delta_to_ampm(sunrise_delta + hour_delta * i),
+          delta_to_ampm(sunrise_delta + hour_delta * (i + 1))))
 
