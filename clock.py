@@ -48,6 +48,11 @@ day_of_week_str = dt_now.strftime("%A")
 planet_hours = ["Moon", "Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury"] 
 planet_symbols = ["☾", "♄", "♃", "♂", "☉", "♀", "☿"]
 
+# Create function to convert timedelta to 12-hour datetime format for ease
+# of display
+def delta_to_ampm(delta): 
+    return (datetime.min + delta).strftime('%I:%M:%S %p')
+
 # Print informaton
 print(f"Today is {weekdays[day_of_week]}: Day of {greekdays[day_of_week]} {day_symbols[day_of_week]}\n")
 print(f"Length of today's hours: {hour_length} minutes")
@@ -57,8 +62,8 @@ print("\nHour table\n")
 for i in range(12):
     print("Hour {}: {} - {}, Hour of {} {}".format(
         i + 1,
-        sunrise_delta + hour_delta * i,
-        sunrise_delta + hour_delta * (i + 1),
+        delta_to_ampm(sunrise_delta + hour_delta * i),
+        delta_to_ampm(sunrise_delta + hour_delta * (i + 1)),
         planet_hours[(day_of_week * 24 + i) % len(planet_hours)],
         planet_symbols[(day_of_week * 24 + i) % len(planet_symbols)]))
 
