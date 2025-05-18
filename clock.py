@@ -1,6 +1,6 @@
-from datetime import datetime, timedelta
-from math import floor, modf
+import math
 import requests
+from datetime import datetime, timedelta
 
 # Geolocation and time data (sample data for now)
 lat = 41.695228
@@ -21,7 +21,7 @@ day_delta = timedelta(hours=day_length.hour,
                       minutes=day_length.minute,
                       seconds=day_length.second)
 hour_length = day_delta.total_seconds() / 60 / 12
-seconds_in_hour = round(modf(hour_length)[0] * 60, 2)
+seconds_in_hour = round(math.modf(hour_length)[0] * 60, 2)
 hour_delta = timedelta(minutes=hour_length)
 
 # Get sunrise and sunset times
@@ -57,7 +57,7 @@ def delta_to_ampm(delta):
 
 # Print informaton
 print(f"Today is {weekdays[day_of_week]}: Day of {greekdays[day_of_week]} {day_symbols[day_of_week]}\n")
-print(f"Length of today's hours: {floor(hour_length)} minutes, {seconds_in_hour} seconds")
+print(f"Length of today's hours: {math.floor(hour_length)} minutes, {seconds_in_hour} seconds")
 print(f"Sunrise: {formatted_sunrise.time()} AM")
 print(f"Sunset: {formatted_sunset.time()} PM")
 print()
