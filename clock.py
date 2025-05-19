@@ -25,7 +25,8 @@ def get_api_data(lat, long, date, tz):
 # Get a time delta from a time string given some format
 def get_time_delta(time_str, dt_format):
     formatted_time = datetime.strptime(time_str, dt_format)
-    time_delta = timedelta(hours=formatted_time.hour,
+    hours = formatted_time.hour + 12 if "PM" in time_str else formatted_time.hour
+    time_delta = timedelta(hours=hours,
                            minutes=formatted_time.minute,
                            seconds=formatted_time.second)
     return time_delta
@@ -34,16 +35,6 @@ def get_time_delta(time_str, dt_format):
 today_res = get_api_data(lat, long, "today", tz) 
 tomorrow = (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")
 tom_res = get_api_data(lat, long, tomorrow, tz)
-
-# Get the length of the 12 hours of the day
-length_format = "%H:%M:%S"
-day_length = datetime.strptime(today_res["results"]["day_length"], length_format)
-day_delta = timedelta(hours=day_length.hour,
-                      minutes=day_length.minute,
-                      seconds=day_length.second)
-hour_length = day_delta.total_seconds() / 60 / 12
-seconds_in_hour = round(math.modf(hour_length)[0] * 60, 2)
-hour_delta = timedelta(minutes=hour_length)
 
 # Get sunrise and sunset times
 dt_format = "%H:%M:%S %p"
@@ -56,6 +47,19 @@ sunset_delta = get_time_delta(sunset, dt_format)
 tom_sunrise = tom_res["results"]["sunrise"]
 tom_sunrise_delta = get_time_delta(tom_sunrise, dt_format)
 
+# Get the length of the 12 hours of the day
+length_format = "%H:%M:%S"
+day_length = today_res["results"]["day_length"]
+day_delta = get_time_delta(day_length, length_format)
+hour_length = day_delta.total_seconds() / 60 / 12
+seconds_in_hour = round(math.modf(hour_length)[0] * 60, 2)
+hour_delta = timedelta(minutes=hour_length)
+
+# Get the length of the 12 hours of the night
+night_delta = (timedelta(hours=24) - sunset_delta + tom_sunrise_delta)
+night_hour_length = night_delta.total_seconds() / 60 / 12
+seconds_in_night_hour = round(math.modf(night_hour_length)[0] * 60, 2)
+night_hour_delta = timedelta(minutes=night_hour_length)
 
 # Get day of week as int (Monday = 0, Sunday = 6)
 dt_now = datetime.now()
@@ -69,9 +73,12 @@ def delta_to_ampm(delta):
 
 # Print informaton
 print(f"Today is {weekdays[day_of_week]}: Day of {greekdays[day_of_week]} {day_symbols[day_of_week]}\n")
-print(f"Length of today's hours: {math.floor(hour_length)} minutes, {seconds_in_hour} seconds")
 print(f"Sunrise: {sunrise}")
 print(f"Sunset: {sunset}")
+print(f"Tomorrow's sunrise: {tom_sunrise}")
+print()
+print(f"Length of today's hours: {math.floor(hour_length)} minutes, {seconds_in_hour} seconds")
+print(f"Length of tonight's hours: {math.floor(night_hour_length)} minutes, {seconds_in_night_hour} seconds")
 print("\nDay Hours\n")
 for i in range(12):
     print("Hour {0:<5} {1:<1} {2:<8} : {3} - {4}".format(
@@ -82,3 +89,10 @@ for i in range(12):
           delta_to_ampm(sunrise_delta + hour_delta * (i + 1))))
 
 print("\nNight Hours\n")
+for i in range(12):
+    print("Hour {0:<5} {1:<1} {2:<8} : {3} - {4}".format(
+          i + 1,
+          planet_symbols[(day_of_week * 24 + (i + 12)) % len(planet_symbols)],
+          planet_hours[(day_of_week * 24 + (i + 12)) % len(planet_hours)],
+          delta_to_ampm(sunset_delta + night_hour_delta * i),
+          delta_to_ampm(sunset_delta + night_hour_delta * (i + 1))))
